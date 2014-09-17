@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LequelFX.LequelFX.guiController">
+<top><VBox BorderPane.alignment="CENTER">
+<children><HBox>
+<children><Label prefHeight="30.0" prefWidth="164.0" text="recherche (dans le nom de fichier uniquement)" wrapText="true" /><TextField fx:id="pattern">
+<HBox.margin>
+<Insets left="10.0" right="10.0" />
+</HBox.margin></TextField><Label alignment="CENTER" text="et">
+<HBox.margin>
+<Insets top="10.0" />
+</HBox.margin></Label><TextField>
+<HBox.margin>
+<Insets left="10.0" right="10.0" />
+</HBox.margin></TextField><Label text="ou">
+<HBox.margin>
+<Insets top="10.0" />
+</HBox.margin></Label><TextField>
+<HBox.margin>
+<Insets left="10.0" right="10.0" />
+</HBox.margin></TextField><Label text="sauf">
+<HBox.margin>
+<Insets top="10.0" />
+</HBox.margin></Label><TextField>
+<HBox.margin>
+<Insets left="10.0" right="10.0" />
+</HBox.margin></TextField><Button fx:id="chercher" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onButtonChercher" text="Rechercher">
+<HBox.margin>
+<Insets left="30.0" />
+</HBox.margin></Button>
+</children>
+<VBox.margin>
+<Insets left="10.0" right="10.0" top="10.0" />
+</VBox.margin></HBox><HBox>
+<children><Label text="Taille de la base :" /><Label text="..." /><Label text="éléments enregistrés" />
+</children>
+<VBox.margin>
+<Insets top="20.0" />
+</VBox.margin></HBox><HBox>
+<children><Label text="Résultats de la requête :" /><Label text="..." /><Label text="réponses trouvées en ">
+<HBox.margin>
+<Insets />
+</HBox.margin></Label><Label text="..." /><Label text="secondes" />
+</children>
+<padding>
+<Insets top="10.0" />
+</padding></HBox>
+</children></VBox>
+</top>
+<center><Pane BorderPane.alignment="CENTER">
+<children><TableView fx:id="table" layoutY="4.0" prefHeight="800.0" prefWidth="1920.0">
+  <columns><TableColumn fx:id="disque" prefWidth="172.0" text="Disque Source" /><TableColumn fx:id="chemin" minWidth="0.0" prefWidth="403.0" text="Chemin" /><TableColumn fx:id="nom" minWidth="2.0" prefWidth="254.0" text="Nom" /><TableColumn fx:id="taille" prefWidth="256.0" text="Taille" />
+    <TableColumn fx:id="date" prefWidth="142.0" text="Date création" /><TableColumn fx:id="ext" prefWidth="112.0" text="Extension" /><TableColumn fx:id="type" prefWidth="89.0" text="Type" />
+  </columns>
+</TableView>
+</children></Pane>
+</center></BorderPane>
