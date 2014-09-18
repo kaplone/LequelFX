@@ -12,13 +12,15 @@ import javafx.beans.property.StringProperty;
 
 public class CellFields {
 	
-	StringProperty fieldName = new SimpleStringProperty();
-	StringProperty fieldDiskName = new SimpleStringProperty();
-	StringProperty fieldExt = new SimpleStringProperty();
-	StringProperty fieldType = new SimpleStringProperty();
-	StringProperty fieldDate = new SimpleStringProperty();
-	IntegerProperty fieldSize = new SimpleIntegerProperty();
-	StringProperty fieldPathName = new SimpleStringProperty();
+	StringProperty fieldName = new SimpleStringProperty("");
+	StringProperty fieldDiskName = new SimpleStringProperty("");
+	StringProperty fieldExt = new SimpleStringProperty("");
+	StringProperty fieldType = new SimpleStringProperty("");
+	StringProperty fieldDate = new SimpleStringProperty("");
+	IntegerProperty fieldSize = new SimpleIntegerProperty(0);
+	StringProperty fieldPathName = new SimpleStringProperty("");
+	StringProperty id  =  new SimpleStringProperty("");
+	StringProperty json  =  new SimpleStringProperty("");
 	
 	public CellFields(){
 	}
@@ -31,8 +33,10 @@ public class CellFields {
 			p += "[" + s + "]  ";
 		}
 		
-		this.fieldPathName.set(p);		
+		this.fieldPathName.set(p);	
 		
+		//this.id.set(j.get("id").asText());
+		this.json.set(j.asText());
 		this.fieldName.set(j.get("nom").asText());
 		this.fieldDiskName.set(j.get("disque").asText());
 		this.fieldSize.set(j.get("taille").asInt());
@@ -45,6 +49,10 @@ public class CellFields {
 
 	public String getFieldName() {
 		return fieldName.get();
+	}
+	
+	public String getId() {
+		return id.get();
 	}
 
 	public String getFieldDiskName() {
@@ -73,6 +81,10 @@ public class CellFields {
 
 	public StringProperty fieldNameProperty() {
 		return fieldName;
+	}
+	
+	public StringProperty idProperty() {
+		return id;
 	}
 
 	public StringProperty fieldDiskNameProperty() {

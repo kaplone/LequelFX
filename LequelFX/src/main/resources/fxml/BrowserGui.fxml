@@ -4,13 +4,17 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-   
-<BorderPane prefHeight="656.0" prefWidth="1050.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="LequelFX.LequelFX.BrowserGuiController">
+
+<BorderPane prefHeight="656.0" prefWidth="1050.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LequelFX.LequelFX.BrowserGuiController">
 <top><HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 <children><Button mnemonicParsing="false" text="&lt;-" /><Button mnemonicParsing="false" text="-&gt;" /><Button mnemonicParsing="false" text="up" /><Label alignment="CENTER" contentDisplay="CENTER" text="Chemin : ">
 <HBox.margin>
 <Insets left="50.0" top="5.0" />
-</HBox.margin></Label><Button mnemonicParsing="false" text="/" />
+</HBox.margin></Label>
+<HBox fx:id="pathBox">
+<children><Button mnemonicParsing="false" text="/" />
+</children>
+</HBox>
 </children></HBox>
 </top>
 <center><Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">

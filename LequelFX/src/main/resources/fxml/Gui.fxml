@@ -53,7 +53,7 @@
 </children></VBox>
 </top>
 <center><Pane BorderPane.alignment="CENTER">
-<children><TableView fx:id="table" layoutY="4.0" prefHeight="800.0" prefWidth="1920.0">
+<children><TableView fx:id="table" layoutY="4.0" onMouseClicked="#onClickList" prefHeight="800.0" prefWidth="1920.0">
   <columns><TableColumn fx:id="disque" prefWidth="172.0" text="Disque Source" /><TableColumn fx:id="chemin" minWidth="0.0" prefWidth="403.0" text="Chemin" /><TableColumn fx:id="nom" minWidth="2.0" prefWidth="254.0" text="Nom" /><TableColumn fx:id="taille" prefWidth="256.0" text="Taille" />
     <TableColumn fx:id="date" prefWidth="142.0" text="Date création" /><TableColumn fx:id="ext" prefWidth="112.0" text="Extension" /><TableColumn fx:id="type" prefWidth="89.0" text="Type" />
   </columns>

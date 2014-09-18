@@ -31,7 +31,6 @@ public class GuiController implements Initializable{
 	@FXML
 	private TextField pattern;
 	
-	
 	@FXML
 	private TableColumn<CellFields, String> disque;
 	@FXML
@@ -50,9 +49,17 @@ public class GuiController implements Initializable{
 	@FXML
 	private TableView<CellFields> table;
 	
-	DBCursor res;
+	private DBCursor res;
 	
-	ObservableList<CellFields> resArray = FXCollections.observableArrayList(); 
+	private ObservableList<CellFields> resArray = FXCollections.observableArrayList(); 
+	
+	private static CellFields currentCellFiefd;
+	
+	public static CellFields getCurrentCellFields(){
+		return currentCellFiefd;
+	}
+	
+	
 	
 	
 	@FXML
@@ -70,7 +77,16 @@ public class GuiController implements Initializable{
 		
 		populateMediasCells();
 		
-		//BrowserGuiController b = new BrowserGuiController();
+		
+	}
+	
+	@FXML
+	protected void onClickList(){
+		currentCellFiefd = table.getSelectionModel().getSelectedItem();
+		BrowserGuiController bc = Main.getLoader_browser().getController();
+		System.out.println("bc : " + bc);
+		bc.populatePath(currentCellFiefd);
+		Main.getStageBrowser().show();
 	}
 		
 		
