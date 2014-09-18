@@ -23,7 +23,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-public class guiController implements Initializable{
+public class GuiController implements Initializable{
 	
 	@FXML
 	private Button chercher;
@@ -69,6 +69,8 @@ public class guiController implements Initializable{
 		}
 		
 		populateMediasCells();
+		
+		//BrowserGuiController b = new BrowserGuiController();
 	}
 		
 		

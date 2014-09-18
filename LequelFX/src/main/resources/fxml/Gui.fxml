@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LequelFX.LequelFX.guiController">
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LequelFX.LequelFX.GuiController">
 <top><VBox BorderPane.alignment="CENTER">
 <children><HBox>
 <children><Label prefHeight="30.0" prefWidth="164.0" text="recherche (dans le nom de fichier uniquement)" wrapText="true" /><TextField fx:id="pattern">
