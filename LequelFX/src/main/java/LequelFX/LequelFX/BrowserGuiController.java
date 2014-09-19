@@ -34,9 +34,8 @@ public class BrowserGuiController  implements Initializable {
 		
 		pathBox.getChildren().clear();
 		ObservableList<Button> boutons = FXCollections.observableArrayList();
-		System.out.println(currentCellFiefd.getFieldPathName());
-		for (String s : currentCellFiefd.getFieldPathName().split(" ")){
-			boutons.add(new Button(s));
+		for (String s : currentCellFiefd.getFieldPathName().split("  ")){
+            boutons.add(new Button(s.substring(2, s.length() - 2)));
 		}
 		pathBox.getChildren().addAll(boutons);
 	}
