@@ -82,9 +82,9 @@ public class GuiController implements Initializable{
 	
 	@FXML
 	protected void onClickList(){
+		
 		currentCellFiefd = table.getSelectionModel().getSelectedItem();
 		BrowserGuiController bc = Main.getLoader_browser().getController();
-		System.out.println("bc : " + bc);
 		bc.populatePath(currentCellFiefd);
 		Main.getStageBrowser().show();
 	}

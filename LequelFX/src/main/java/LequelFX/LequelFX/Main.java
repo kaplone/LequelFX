@@ -12,7 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 
 public class Main extends Application implements javafx.fxml.Initializable {
-	private FXMLLoader loader_tableau;
+	private static FXMLLoader loader_tableau;
 	private static FXMLLoader loader_browser;
 	private Stage stage_tableau;
 	private static Stage stage_browser;
@@ -26,7 +26,13 @@ public class Main extends Application implements javafx.fxml.Initializable {
 		try {
 			
 			stage_tableau = new Stage();
-			tableau = FXMLLoader.load(getClass().getResource("/fxml/Gui.fxml"));
+			loader_tableau = new FXMLLoader();
+			URL location_t = getClass().getResource("/fxml/Gui.fxml");
+			loader_tableau.setLocation(location_t);
+			loader_tableau.setBuilderFactory(new JavaFXBuilderFactory());
+
+			tableau =  loader_tableau.load(location_t.openStream());
+			//tableau = FXMLLoader.load(getClass().getResource("/fxml/Gui.fxml"));
 			scene_tableau = new Scene(tableau);
 			scene_tableau.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
 			stage_tableau.setScene(scene_tableau);
@@ -35,11 +41,11 @@ public class Main extends Application implements javafx.fxml.Initializable {
 			
 			stage_browser = new Stage();
 			loader_browser = new FXMLLoader();
-			URL location = getClass().getResource("/fxml/BrowserGui.fxml");
-			loader_browser.setLocation(location);
+			URL location_b = getClass().getResource("/fxml/BrowserGui.fxml");
+			loader_browser.setLocation(location_b);
 			loader_browser.setBuilderFactory(new JavaFXBuilderFactory());
 
-			browser =  loader_browser.load(location.openStream());
+			browser =  loader_browser.load(location_b.openStream());
 			//browser =  loader_browser.load(getClass().getResource("/fxml/BrowserGui.fxml"));
 			
 			scene_browser = new Scene(browser);
@@ -67,6 +73,10 @@ public class Main extends Application implements javafx.fxml.Initializable {
 	
 	public static FXMLLoader getLoader_browser(){
 		return loader_browser;
+	}
+	
+	public static FXMLLoader getLoader_tableau(){
+		return loader_tableau;
 	}
 	
 	public static void main(String[] args) {
