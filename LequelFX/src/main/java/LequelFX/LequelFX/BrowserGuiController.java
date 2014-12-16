@@ -3,21 +3,28 @@ package LequelFX.LequelFX;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.ResourceBundle;
+
+import org.bson.types.ObjectId;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 import utils.CellFields;
 import utils.JsonUtils;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -26,9 +33,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.util.Callback;
 
 
@@ -36,7 +45,7 @@ import javafx.util.Callback;
 public class BrowserGuiController  implements Initializable {
 	
 	@FXML
-	private TableColumn<CellFields, Image> type; 
+	private TableColumn<CellFields, ImageView> type; 
 	@FXML
 	private TableColumn<CellFields, String> nom; 
 	@FXML
@@ -53,11 +62,30 @@ public class BrowserGuiController  implements Initializable {
 	private ObservableList<CellFields> resArray = FXCollections.observableArrayList(); 
 	private DBCursor res;
 	
+	ObservableMap<String, Date> contenu = FXCollections.observableHashMap();
+	
+	DBObject n;
+	Date n_old ;
+	
+	String cle;
+	
+	ObjectId oid_pere ;
+	
+	Image image;
+	
+	DropShadow dropShadow = new DropShadow();
+	
+	
 	
 	private GuiController gc = Main.getLoader_tableau().getController();
+//	
+//	JsonNode chemin;
+//	ArrayList<String> chemins = new ArrayList<String>();
 	
-	JsonNode chemin;
-	ArrayList<String> chemins = new ArrayList<String>();
+	JsonNode chemin_pere;
+	JsonNode id_pere_node;
+	String id_pere;
+	ObjectId id_pere_obj;
 	
 	
     MongoClient mongoclient;
@@ -67,15 +95,18 @@ public class BrowserGuiController  implements Initializable {
 	
 	public void populatePath(CellFields currCellFiefd ){
 		
-		pathBox.getChildren().clear();
-		currentCellFiefd = currCellFiefd;
+		if(currCellFiefd != null){
 		
-		ObservableList<Button> boutons = FXCollections.observableArrayList();
-		for (String s : currentCellFiefd.getFieldPathName().split("  ")){
-            boutons.add(new Button(s.substring(2, s.length() - 2)));
+			pathBox.getChildren().clear();
+			currentCellFiefd = currCellFiefd;
+			
+			ObservableList<Button> boutons = FXCollections.observableArrayList();
+			for (String s : currentCellFiefd.getFieldPathName().split("  ")){
+	            boutons.add(new Button(s.substring(2, s.length() - 2)));
+			}
+			pathBox.getChildren().addAll(boutons);
+			populateMediasCells();
 		}
-		pathBox.getChildren().addAll(boutons);
-		populateMediasCells();
 	}
 	
 	public static void show_stage(){
@@ -92,7 +123,7 @@ public class BrowserGuiController  implements Initializable {
 		
 	
 		db = mongoclient.getDB( "Lequel" );
-		coll = db.getCollection("Lequel_V02");
+		coll = db.getCollection("Lequel_V03");
 		
 
 		
@@ -104,43 +135,96 @@ public class BrowserGuiController  implements Initializable {
 		 //Set up the table data
 		
 		
-        currentCellFiefd = GuiController.getCurrentCellFields();
+		 dropShadow.setRadius(5.0);
+		 dropShadow.setOffsetX(3.0);
+		 dropShadow.setOffsetY(3.0);
+		 dropShadow.setColor(Color.color(0.4, 0.5, 0.5));
+		
+        //currentCellFiefd = GuiController.getCurrentCellFields();
         
         System.out.println(coll);
         
-        chemin = currentCellFiefd.getFieldNode().get("parents");
-        Iterator<JsonNode> elements = chemin.elements();
-        while(elements.hasNext()){
-            chemins.add(elements.next().asText());
+        id_pere_node = currentCellFiefd.getFieldNode().get("id_pere");
+        if(currentCellFiefd.getFieldNode().get("fichier").asBoolean()){
+        	id_pere  = id_pere_node.textValue();
+        	oid_pere =  new ObjectId(id_pere);
+        }
+        else {
+        	id_pere  = id_pere_node.get("$oid").textValue();
+        	oid_pere =  new ObjectId(id_pere);
         }
         
-        if (currentCellFiefd.getFieldType() == "Fichier"){
-        	chemins.remove(chemins.size()-1);
-        }
+		
+		resArray.clear();
+		contenu.clear();
         
         
         
-        System.out.println(chemins);
-        
-		res = coll.find(new BasicDBObject("parents" , new BasicDBObject("$all", chemins )));
+		res = coll.find(new BasicDBObject("id_pere", oid_pere));
+
 		
 		while (res.hasNext()){
 			
-			JsonUtils.loadList(res.next().toString(), resArray);
+			n = res.next();
+			
+			cle = (String) n.get("nom");
+			
+			if (! contenu.containsKey(cle)){
+				contenu.put(cle, (Date) n.get("scan"));
+				JsonUtils.loadList(n.toString(), resArray);
+			}
+			else {
+				if ((contenu.get(cle)).compareTo((Date) n.get("scan")) < 0){
+			    contenu.put(cle, (Date) n.get("scan"));
+			    //resArray.remove
+				}
+			}
+			
+			n_old = (Date) n.get("scan");
+			
+			
+		}
+		
+        res = coll.find(new BasicDBObject("id_pere", id_pere));
+
+		
+		while (res.hasNext()){
+			
+			n = res.next();
+			
+			cle = n.get("nom") + "." + n.get("extension");
+			
+			if (! contenu.containsKey(cle)){
+				contenu.put(cle, (Date) n.get("scan"));
+				JsonUtils.loadList(n.toString(), resArray);
+			}
+			else {
+				if ((contenu.get(cle)).compareTo((Date) n.get("scan")) < 0){
+			    contenu.put(cle, (Date) n.get("scan"));
+			    //resArray.remove
+				}
+			}
+			
+			n_old = (Date) n.get("scan");
+			
+			
 		}
 
 	    
-	    type.setCellValueFactory(new Callback<CellDataFeatures<CellFields, Image>, ObservableValue<Image>>() {
+	    type.setCellValueFactory(new Callback<CellDataFeatures<CellFields, ImageView>, ObservableValue<ImageView>>() {
 	    	
 	    	
-	        public ObservableValue<Image> call(CellDataFeatures<CellFields, Image> p) {
+	        public ObservableValue<ImageView> call(CellDataFeatures<CellFields, ImageView> p) {
 	        	
-	        	final ImageView imageview = new ImageView();
-                imageview.setFitHeight(150);
-                imageview.setFitWidth(50);
-                imageview.setImage(p.getValue().getFieldImage());
-	            // p.getValue() returns the Person instance for a particular TableView row
-	            return p.getValue().fieldImageProperty();
+	        	
+	        	ObjectProperty<ImageView> imageview = new SimpleObjectProperty<ImageView>();
+	        	image = p.getValue().getFieldImage();
+	        	
+	        	imageview.set(new ImageView(image));
+	        	imageview.get().setEffect(dropShadow);
+                imageview.get().setFitHeight(24);
+                imageview.get().setFitWidth(24);
+	            return imageview;
 	        }
 	     });
 	    
@@ -151,7 +235,7 @@ public class BrowserGuiController  implements Initializable {
 		    new PropertyValueFactory<CellFields,Integer>("fieldSize")
 		);
 
-		resArray.clear();
+		
         //resArray.add(currentCellFiefd);
 
  	    table.setItems(resArray);

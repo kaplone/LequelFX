@@ -139,7 +139,7 @@ public class GuiController implements Initializable{
 		
 	
 		db = mongoclient.getDB( "Lequel" );
-		coll = db.getCollection("Lequel_V02");
+		coll = db.getCollection("Lequel_V03");
 		
 
 		
