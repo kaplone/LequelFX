@@ -47,6 +47,7 @@ public class Test_update {
 		coll.createIndex(new BasicDBObject("chemin_pere", 1));
 		coll.createIndex(new BasicDBObject("scan", 1));
 		coll.createIndex(new BasicDBObject("parents", 1));
+		coll.createIndex(new BasicDBObject("id_pere", 1));
 
 	}
 	
