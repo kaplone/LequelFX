@@ -165,9 +165,17 @@ public class BrowserGuiController  implements Initializable {
 		JsonNode current_node = resArray.get(0).getFieldNode();
 		
 		resArray.clear();
-    	
-    	id_pere  = current_node.get("id_pere").get("$oid").textValue();
-    	oid_pere =  new ObjectId(id_pere);
+		
+		id_pere_node = current_node.get("id_pere");
+        if(currentCellFiefd.getFieldNode().get("fichier").asBoolean()){
+        	id_pere  = id_pere_node.textValue();
+        	oid_pere =  new ObjectId(id_pere);
+        }
+        else {
+        	id_pere  = id_pere_node.get("$oid").textValue();
+        	oid_pere =  new ObjectId(id_pere);
+        }
+
     	
     	res = coll.find(new BasicDBObject("_id", oid_pere));
     			
