@@ -81,6 +81,8 @@ public class BrowserGuiController  implements Initializable {
 	
 	String currentLevel;
 	
+	CellFields rep_vide;
+	
 	
 	
 	private GuiController gc = Main.getLoader_tableau().getController();
@@ -154,45 +156,70 @@ public class BrowserGuiController  implements Initializable {
 			}
 			pathBox.getChildren().addAll(boutons);
 			populateMediasCells(currentCellFiefd.getFieldNode().get("_id"), currentCellFiefd.getFieldType());
-			currentCellFiefd = resArray.get(0);
+			
+			if (resArray.size() == 0){
+				
+				System.out.println("vers rep vide");
+				rep_vide = currentCellFiefd;
+			}
+			else {
+				currentCellFiefd = resArray.get(0);
+			}
+			
+			
 		}
 	}
     
     public void populatePathUp(){
 		
 		pathBox.getChildren().remove(pathBox.getChildren().size() -1);
+		
+		if (resArray.size() == 0){
+			
+			System.out.println("depuis rep vide");
+			
+			// verifier le fonctionnement
+	    	
+			populateMediasCells( rep_vide.getFieldNode().get("id_pere"), rep_vide.getFieldType());
+			currentCellFiefd = resArray.get(0);
 
-		JsonNode current_node = resArray.get(0).getFieldNode();
-		
-		resArray.clear();
-		
-		id_pere_node = current_node.get("id_pere");
-        if(currentCellFiefd.getFieldNode().get("fichier").asBoolean()){
-        	id_pere  = id_pere_node.textValue();
-        	oid_pere =  new ObjectId(id_pere);
-        }
-        else {
-        	id_pere  = id_pere_node.get("$oid").textValue();
-        	oid_pere =  new ObjectId(id_pere);
-        }
+			
+		}
+		else {
 
-    	
-    	res = coll.find(new BasicDBObject("_id", oid_pere));
-    			
-    	while (res.hasNext()){
-    	   	
-    	   DBObject d = res.next();
-    	   System.out.println(d.toString());
-    	   JsonUtils.loadList(d.toString(), resArray);
-    	}
-    	
-    	System.out.println(currentCellFiefd.getFieldNameFull());
-    	System.out.println("up !");
-    	
-		populateMediasCells( resArray.get(0).getFieldNode().get("id_pere"), resArray.get(0).getFieldType());
-		currentCellFiefd = resArray.get(0);
-		
-		System.out.println(currentCellFiefd.getFieldNameFull());
+			currentCellFiefd = resArray.get(0);
+			JsonNode current_node = resArray.get(0).getFieldNode();
+			
+			resArray.clear();
+			
+			id_pere_node = current_node.get("id_pere");
+	        if(currentCellFiefd.getFieldNode().get("fichier").asBoolean()){
+	        	id_pere  = id_pere_node.textValue();
+	        	oid_pere =  new ObjectId(id_pere);
+	        }
+	        else {
+	        	id_pere  = id_pere_node.get("$oid").textValue();
+	        	oid_pere =  new ObjectId(id_pere);
+	        }
+	
+	    	
+	    	res = coll.find(new BasicDBObject("_id", oid_pere));
+	    			
+	    	while (res.hasNext()){
+	    	   	
+	    	   DBObject d = res.next();
+	    	   System.out.println(d.toString());
+	    	   JsonUtils.loadList(d.toString(), resArray);
+	    	}
+	    	
+	    	System.out.println(currentCellFiefd.getFieldNameFull());
+	    	System.out.println("up !");
+	    	
+			populateMediasCells( resArray.get(0).getFieldNode().get("id_pere"), resArray.get(0).getFieldType());
+			currentCellFiefd = resArray.get(0);
+			
+			System.out.println(currentCellFiefd.getFieldNameFull());
+		}
 
 	}
 
