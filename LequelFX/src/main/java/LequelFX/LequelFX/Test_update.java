@@ -144,7 +144,7 @@ public class Test_update {
 				if (tmp != null
 				    &&  tmp.equals((String)currentObject.get("chemin_pere"))
 				    && !(newDocument4 == null || newDocument4.toString().equals("{ }"))
-				    &&  Math.abs(timeCurrentDoc - savedTimeDoc) < 3) {
+				    &&  Math.abs(timeCurrentDoc - savedTimeDoc) < 20) {
 					System.out.println(newDocument4.toString());
 					coll.update(currentObject, newDocument4 , true, false);
 					System.out.println("_");
@@ -155,6 +155,8 @@ public class Test_update {
 					newDocument4 = new BasicDBObject();
 					
 					tmp = (String)currentObject.get("chemin_pere");
+					
+					if (tmp == null) continue;
 					
 					queryMotif = new BasicDBObject("$text", new BasicDBObject("$search", String.format("\"%s\"", tmp ) ) );
 					obj.add(queryMotif);
