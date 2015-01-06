@@ -2,6 +2,7 @@ package LequelFX.LequelFX;
 
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import utils.CellFields;
@@ -11,10 +12,12 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -59,6 +62,13 @@ public class GuiController implements Initializable{
 		return currentCellFiefd;
 	}
 	
+    ObservableMap<String, Date> contenu = FXCollections.observableHashMap();
+	
+	DBObject n;
+	Date n_old ;
+	
+	String cle;
+	
 	
 	
 	
@@ -75,7 +85,28 @@ public class GuiController implements Initializable{
 		
 		while (res.hasNext()){
 			
-			JsonUtils.loadList(res.next().toString(), resArray);
+            n = res.next();
+			
+			if(Boolean.getBoolean(n.get("fichier").toString())){
+			    cle = n.get("nom") + "." + n.get("extension");
+			}
+			else {
+				cle = (String) n.get("nom");
+			}
+			
+			if (! contenu.containsKey(cle)){
+				contenu.put(cle, (Date) n.get("scan"));
+				JsonUtils.loadList(n.toString(), resArray);
+			}
+			else {
+				if ((contenu.get(cle)).compareTo((Date) n.get("scan")) < 0){
+			    contenu.put(cle, (Date) n.get("scan"));
+			    //resArray.remove
+				}
+			}
+			
+			n_old = (Date) n.get("scan");
+
 		}
 		
 		populateMediasCells();
