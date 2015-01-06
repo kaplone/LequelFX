@@ -87,12 +87,8 @@ public class GuiController implements Initializable{
 			
             n = res.next();
 			
-			if(Boolean.getBoolean(n.get("fichier").toString())){
-			    cle = n.get("nom") + "." + n.get("extension");
-			}
-			else {
-				cle = (String) n.get("nom");
-			}
+			
+			cle = (String) n.get("chemin");
 			
 			if (! contenu.containsKey(cle)){
 				contenu.put(cle, (Date) n.get("scan"));
