@@ -68,7 +68,10 @@ public class GuiController implements Initializable{
 		resArray.clear();
 	
 		
-		res = coll.find(new BasicDBObject("nom" , new BasicDBObject("$regex", pattern.getText() )));
+		//res = coll.find(new BasicDBObject("nom" , new BasicDBObject("$regex", pattern.getText() )));
+		BasicDBObject search = new BasicDBObject("$search", String.format("\"%s\"", pattern.getText()));
+		BasicDBObject textSearch = new BasicDBObject("$text", search);
+		res = coll.find(textSearch);
 		
 		while (res.hasNext()){
 			
