@@ -7,14 +7,11 @@
 
 <BorderPane prefHeight="861.0" prefWidth="1288.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LequelFX.LequelFX.BrowserGuiController">
 <top><HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-<children><Button mnemonicParsing="false" text="&lt;-" /><Button mnemonicParsing="false" text="-&gt;" /><Button mnemonicParsing="false" onAction="#onUpClicked" text="up" /><Label alignment="CENTER" contentDisplay="CENTER" text="Chemin : ">
+<children><Button mnemonicParsing="false" onAction="#onUpClicked" prefHeight="58.0" prefWidth="177.0" text="up" /><Label alignment="CENTER" contentDisplay="CENTER" text="Chemin : ">
 <HBox.margin>
 <Insets left="50.0" top="5.0" />
-</HBox.margin></Label>
-<HBox fx:id="pathBox">
-<children><Button mnemonicParsing="false" text="/" />
-</children>
-</HBox>
+</HBox.margin></Label><Button fx:id="root" mnemonicParsing="false" onAction="#goToRoot" text="/" />
+<HBox fx:id="pathBox" />
 </children></HBox>
 </top>
 <center><Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">

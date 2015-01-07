@@ -55,6 +55,9 @@ public class BrowserGuiController  implements Initializable {
 	private TableView<CellFields> table; 
 	@FXML
 	private HBox pathBox;
+	@FXML
+	private Button root;
+	
 	
 	private CellFields currentCellFiefd;
 	
@@ -93,14 +96,27 @@ public class BrowserGuiController  implements Initializable {
 	DB db;
 	DBCollection coll;
 	
+	final ObservableList<Button> boutons = FXCollections.observableArrayList();
+	
+	@FXML
+	public void goToRoot(){
+		System.out.println("root");
+		
+		
+		for (int i = 0; i < boutons.size(); i++){
+      		populatePathUp();
+      	}
+	}
+	
 	public void populatePath(CellFields currCellFiefd ){
 		
 		if(currCellFiefd != null){
 		
 			pathBox.getChildren().clear();
 			currentCellFiefd = currCellFiefd;
+			boutons.clear();
 			
-			final ObservableList<Button> boutons = FXCollections.observableArrayList();
+			
 			
 			String [] fpn = currentCellFiefd.getFieldPathName().split("  ");
 			
@@ -112,7 +128,11 @@ public class BrowserGuiController  implements Initializable {
 	            b.setOnAction(new EventHandler<ActionEvent>() {
 	            	 
 	                public void handle(ActionEvent event) {
-	                	System.out.println(b.getText());
+
+	                  	for (int i = boutons.indexOf(b) + 1; i < boutons.size(); i++){
+	                  		populatePathUp();
+	                  	}
+	                  	
 	                	
 	                	
 	                }
@@ -129,8 +149,7 @@ public class BrowserGuiController  implements Initializable {
 		
 			pathBox.getChildren().clear();
 			currentCellFiefd = currCellFiefd;
-			
-			final ObservableList<Button> boutons = FXCollections.observableArrayList();
+			boutons.clear();
 			
 			String [] fpn = currentCellFiefd.getFieldPathName().split("  ");
 			
@@ -142,7 +161,9 @@ public class BrowserGuiController  implements Initializable {
 	            b.setOnAction(new EventHandler<ActionEvent>() {
 	            	 
 	                public void handle(ActionEvent event) {
-	                	System.out.println(b.getText());
+	                	for (int i = boutons.indexOf(b) + 1; i < boutons.size(); i++){
+	                  		populatePathUp();
+	                  	}
 	                	
 	                }
 	            });
