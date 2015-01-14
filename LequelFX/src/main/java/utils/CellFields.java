@@ -43,8 +43,10 @@ public class CellFields {
 
 		String p = "";
 
-		for (JsonNode s : j.get("parents")){
-			p += "[" + s + "]  ";
+		for (String s : j.get("chemin").asText().split("/")){
+			if (! "".equals(s)){
+			    p += "[" + s + "]  ";
+			}
 		}
 		
 		this.fieldPathName.set(p);	
@@ -55,7 +57,7 @@ public class CellFields {
 		this.fieldNameFull.set(j.get("fichier").asBoolean() ? 
 				               j.get("nom").asText() + "." + j.get("extension").asText() :
 				               j.get("nom").asText());
-		this.fieldDiskName.set(j.get("disque").asText());
+		this.fieldDiskName.set(j.get("chemin").asText().split("/")[1]);
 		this.fieldSize.set(j.get("taille").asLong());
 		this.fieldExt.set(j.get("extension").asText());
 		this.fieldType.set(j.get("fichier").asBoolean() ? "Fichier" : "Dossier");

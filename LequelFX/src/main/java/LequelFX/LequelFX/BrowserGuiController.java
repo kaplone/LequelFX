@@ -85,7 +85,7 @@ public class BrowserGuiController  implements Initializable {
 	
 	private GuiController gc = Main.getLoader_tableau().getController();
 	
-	JsonNode chemin_pere;
+	//JsonNode chemin_pere;
 	JsonNode id_pere_node;
 	String id_pere;
 	ObjectId id_pere_obj;
@@ -101,8 +101,6 @@ public class BrowserGuiController  implements Initializable {
 	@FXML
 	public void goToRoot(){
 		System.out.println("root");
-		
-		
 		for (int i = 0; i < boutons.size(); i++){
       		populatePathUp();
       	}
@@ -115,14 +113,14 @@ public class BrowserGuiController  implements Initializable {
 			pathBox.getChildren().clear();
 			currentCellFiefd = currCellFiefd;
 			boutons.clear();
-			
-			
+	        
+			System.out.println(currentCellFiefd.getFieldPathName());
 			
 			String [] fpn = currentCellFiefd.getFieldPathName().split("  ");
 			
 			for (int i = 0; i < fpn.length -1; i++){
 				String s = fpn[i];
-				final Button b = new Button(s.substring(2, s.length() - 2));
+				final Button b = new Button(s.substring(1, s.length() - 1));
 				boutons.add(b);
 	            
 	            b.setOnAction(new EventHandler<ActionEvent>() {
@@ -131,10 +129,7 @@ public class BrowserGuiController  implements Initializable {
 
 	                  	for (int i = boutons.indexOf(b) + 1; i < boutons.size(); i++){
 	                  		populatePathUp();
-	                  	}
-	                  	
-	                	
-	                	
+	                  	}    	
 	                }
 	            });
 			}
@@ -155,7 +150,7 @@ public class BrowserGuiController  implements Initializable {
 			
 			for (int i = 0; i < fpn.length; i++){
 				String s = fpn[i];
-				final Button b = new Button(s.substring(2, s.length() - 2));
+				final Button b = new Button(s.substring(1, s.length() - 1));
 				boutons.add(b);
 	            
 	            b.setOnAction(new EventHandler<ActionEvent>() {
@@ -189,7 +184,7 @@ public class BrowserGuiController  implements Initializable {
     
     public void populatePathUp(){
 		
-		pathBox.getChildren().remove(pathBox.getChildren().size() -1);
+    	pathBox.getChildren().remove(pathBox.getChildren().size() -1);
 		
 		if (resArray.size() == 0){
 			
@@ -199,7 +194,6 @@ public class BrowserGuiController  implements Initializable {
 			// verifier le fonctionnement
 	    	
 			populateMediasCells( rep_vide.getFieldNode().get("id_pere"));
-//			populateMediasCells( rep_vide.getFieldNode().get("id_pere"), rep_vide.getFieldType());
 			currentCellFiefd = resArray.get(0);
 
 			
@@ -227,18 +221,14 @@ public class BrowserGuiController  implements Initializable {
 	    	while (res.hasNext()){
 	    	   	
 	    	   d = res.next();
-	    	   System.out.println("d : " + d.toString());
 	    	   JsonUtils.loadList(d.toString(), resArray);
-	    	   System.out.println("taille : " + resArray.size());
 	    	}
 	    	
 	    	currentCellFiefd = resArray.get(0);
 	    	
-	    	System.out.println( "currentcf : " + currentCellFiefd.getFieldNameFull());
-	    	System.out.println("up !");
-	    	
 			populateMediasCells( currentCellFiefd.getFieldNode().get("id_pere"));
 		}
+		populatePath(currentCellFiefd);
 
 	}
 
@@ -281,6 +271,11 @@ public class BrowserGuiController  implements Initializable {
         id_pere_node = currentCellFiefd.getFieldNode().get("id_pere");
 
     	id_pere  = id_pere_node.textValue();
+    	
+    	// pas certain
+//    	if (id_pere == null){
+//			id_pere  = id_pere_node.get("$oid").textValue();
+//		}
     	oid_pere =  new ObjectId(id_pere);
         
 		
