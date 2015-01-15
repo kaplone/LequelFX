@@ -44,7 +44,7 @@ public class CellFields {
 		String p = "";
 
 		for (String s : j.get("chemin").asText().split("/")){
-			if (! "".equals(s)){
+			if (! "".equals(s) && ! " ".equals(s)){
 			    p += "[" + s + "]  ";
 			}
 		}

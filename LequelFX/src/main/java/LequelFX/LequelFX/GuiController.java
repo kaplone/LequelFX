@@ -1,38 +1,45 @@
-	package LequelFX.LequelFX;
+package LequelFX.LequelFX;
 	
-	import java.net.URL;
-	import java.net.UnknownHostException;
-	import java.util.Date;
-	import java.util.ResourceBundle;
-	
-	import utils.CellFields;
-	import utils.JsonUtils;
-	import utils.TableViewGenerator;
-	
-	import com.mongodb.BasicDBObject;
-	import com.mongodb.DB;
-	import com.mongodb.DBCollection;
-	import com.mongodb.DBCursor;
-	import com.mongodb.DBObject;
-	import com.mongodb.MongoClient;
-	
-	import javafx.beans.property.IntegerProperty;
-	import javafx.beans.property.SimpleIntegerProperty;
-	import javafx.collections.FXCollections;
-	import javafx.collections.ObservableList;
-	import javafx.collections.ObservableMap;
-	import javafx.fxml.FXML;
-	import javafx.fxml.Initializable;
-	import javafx.scene.control.Button;
-	import javafx.scene.control.Label;
-	import javafx.scene.control.Tab;
-	import javafx.scene.control.TabPane;
-	import javafx.scene.control.TableColumn;
-	import javafx.scene.control.TableView;
-	import javafx.scene.control.TextField;
-	import javafx.scene.control.cell.PropertyValueFactory;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Date;
+import java.util.ResourceBundle;
+import java.util.regex.Pattern;
+
+import org.bson.NewBSONDecoder;
+
+import utils.CellFields;
+import utils.JsonUtils;
+import utils.TableViewGenerator;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 	
 	public class GuiController implements Initializable{
+		
+		@FXML
+		private BorderPane racine;
 		
 		@FXML
 		private Button chercher;
@@ -42,7 +49,7 @@
 		@FXML
 		private TextField et_;
 		@FXML
-		private TextField ou_;
+		private TextField sauf_;
 		
 		
 		@FXML
@@ -51,14 +58,15 @@
 		private Label nb_res_label;
 		@FXML
 		private Label temps_res_label;
+		
 		@FXML
-		private TabPane onglets;
+		private TextField regex;
+		@FXML
+		private Button recherche_regex;
 	
 		private TableView<CellFields> table;
 		
 		private DBCursor res;
-		
-		private ObservableList<CellFields> resArray = FXCollections.observableArrayList(); 
 		
 		private static CellFields currentCellFiefd;
 		
@@ -67,6 +75,9 @@
 		}
 		
 	    ObservableMap<String, Date> contenu = FXCollections.observableHashMap();
+	    
+	    TabPane onglets = new TabPane();
+	    //racine.setCenter(onglets);
 		
 		DBObject n;
 		Date n_old ;
@@ -75,11 +86,19 @@
 		
 		String motif = "";
 		String et = "";
-		String ou = "";
+		String sauf = "";
 		
-		IntegerProperty compte = new SimpleIntegerProperty();
+		String reg = "";
 		
 		Tab currentTab;
+		
+		String disque =  "";
+		String disque_temp = "";
+		
+		
+		SingleSelectionModel<Tab> selectionTab = onglets.getSelectionModel();
+		
+		
 		
 		TableViewGenerator tv;
 		
@@ -88,64 +107,127 @@
 		
 		DB db;
 		DBCollection coll;
+		
+		@FXML
+		protected void onButtonRegexChercher(){
+			
+			reg = regex.getText();
+			
+			currentTab = new Tab("[motif] " + reg);
+			
+			table = new TableView<CellFields>();
+			
+			tv = new TableViewGenerator(table);
+			
+			BasicDBObject search = new BasicDBObject("nom", Pattern.compile(reg, Pattern.CASE_INSENSITIVE));
+			res = coll.find(search);
+			
+			affichage();
+			
+		}
 	
 		
 		@FXML
 		protected void onButtonChercher(){
 			
 			motif = pattern.getText();
-			et = et_.getText();
-			ou = ou_.getText();
+			et = et_.getText();	
+			sauf = sauf_.getText();	
 	
-	        
-			currentTab = new Tab(motif + "+" +  et + "/" + ou);
-						
-			onglets.getTabs().add(currentTab);
-			
 			table = new TableView<CellFields>();
+			table.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				public void handle(MouseEvent event) {
+					onClickList();
+		            }
+		    });
 			
 			tv = new TableViewGenerator(table);
-	
-			resArray = tv.getResArray();
-	
-			if (motif.length() != 0 && et.length() == 0 && ou.length() == 0){
+			
+			if (motif.length() != 0 && et.length() == 0 && sauf.length() == 0){
+				
+				System.out.println("\n" + motif);
+				
+				currentTab = new Tab("[strict] " + motif);
+				
 				BasicDBObject search = new BasicDBObject("$search", String.format("\"%s\"", motif));
 				BasicDBObject textSearch = new BasicDBObject("$text", search);
 				res = coll.find(textSearch);
+				System.out.println(res.count());
+
 			}
-			else if (motif.length() != 0 && et.length() != 0 && ou.length() == 0){
+			else if (motif.length() != 0 && et.length() != 0){
+				
+				System.out.println("\n" + motif + " " + et);
+				
+				currentTab = new Tab("[strict] " + motif + "+" +  et);
+				
 				BasicDBObject et_search = new BasicDBObject("$search", String.format("\"%s\" \"%s\"", motif, et));
 				BasicDBObject textSearch_final_et = new BasicDBObject("$text", et_search);
 				res = coll.find(textSearch_final_et);
 			}
-			else if (motif.length() != 0 && et.length() == 0 && ou.length() != 0){
-				BasicDBObject ou_search = new BasicDBObject("$search", String.format("\"%s\" %s", motif, et));
-				BasicDBObject textSearch_final_ou = new BasicDBObject("$text", ou_search);
-				res = coll.find(textSearch_final_ou);
+			
+            else if (motif.length() != 0 && sauf.length() != 0){
+				
+				System.out.println("\n" + motif + " " + sauf);
+				
+				currentTab = new Tab("[strict] " + motif + "-" +  sauf);
+				
+				BasicDBObject sauf_search = new BasicDBObject("$search", String.format("\"%s\" -\"%s\"", motif, sauf));
+				BasicDBObject textSearch_final_sauf = new BasicDBObject("$text", sauf_search);
+				res = coll.find(textSearch_final_sauf);
 			}
-			else {
-				System.out.println("pas de res");
-			}
+
+			affichage();
+		}
+		
+		protected void affichage(){
+			
+			onglets.getTabs().add(currentTab);
 			
 			taille_base_label.setText("" + coll.count() + " ");
-			temps_res_label.setText("" + (Double.parseDouble(res.explain().get("millis").toString()) /1000) + " ");
+
+			DBCursor res1 = res.sort(new BasicDBObject("chemin", 1));
 			
-			while (res.hasNext()){
+			System.out.println(res1.explain());
+			
+			tv.setTemps(Double.parseDouble(res.explain().get("millis").toString()) /1000);
+			
+			temps_res_label.setText("" + (tv.getTemps()) + " ");
+			
+			while (res1.hasNext()){
 				
-	            n = res.next();
-	
+				n = res1.next();
 				cle = (String) n.get("chemin");
 				
+				disque_temp = cle.split("/")[1];
+
+				
+				if (! disque.equals("") && ! disque.equals(disque_temp)){
+					JsonUtils.loadList(new BasicDBObject("chemin", "/ /")
+					                             .append("nom", "")
+					                             .append("scan", new Date())
+					                             .append("date", new Date())
+					                             .append("fichier", null)
+					                             .append("extension", "")
+					                             .append("taille", 0)
+							                     .toString(), tv.getResArray());
+
+					
+				}
+				
+				disque = disque_temp;
+	
 				if (! contenu.containsKey(cle)){
 					contenu.put(cle, (Date) n.get("scan"));
-					JsonUtils.loadList(n.toString(), resArray);
-					compte.set(compte.get() + 1);
-					if (compte.get() > 499){
-						nb_res_label.setText("" + compte.get() + " (dépasse les 500) ");
+					JsonUtils.loadList(n.toString(), tv.getResArray());
+					tv.setNb(tv.getNb() + 1);
+					if (tv.getNb() > 499){
+						nb_res_label.setText("" + tv.getNb() + " (dépasse les 500) ");
+						res1 = null;
 						break;
 					}
 					else {
-						nb_res_label.setText("" + compte.get() + " ");
+						nb_res_label.setText("" + tv.getNb() + " ");
 					}
 				}
 				else {
@@ -159,8 +241,13 @@
 	
 			}
 			
+			
+			
 			populateMediasCells();
 			currentTab.setContent(table);
+			// TODO : afficher le dernier onglet
+			
+			selectionTab.select(currentTab);
 			
 			
 		}
@@ -201,11 +288,8 @@
 		    tv.getChemin().setCellValueFactory(
 				new PropertyValueFactory<CellFields,String>("fieldPathName")
 			);
-			
-		    System.out.println(resArray.size());
-		    System.out.println(table.getChildrenUnmodifiable());
 		    
-		    table.setItems(resArray);
+		    table.setItems(tv.getResArray());
 	
 		}
 		
@@ -227,6 +311,8 @@
 	
 		public void initialize(URL location, ResourceBundle resources) {
 			// TODO Stub de la méthode généré automatiquement
+			
+			racine.setCenter(onglets);
 			
 			connecter();
 		}

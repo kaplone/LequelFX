@@ -14,6 +14,9 @@ public class TableViewGenerator {
 	private TableColumn<CellFields, String>  date;
 	private TableColumn<CellFields, String>  ext;
 	
+	private int nb;
+	private double temps;
+
 	private ObservableList<CellFields> resArray;
 	
 	public TableViewGenerator(TableView<CellFields> table){
@@ -63,5 +66,22 @@ public class TableViewGenerator {
 	public ObservableList<CellFields> getResArray() {
 		return resArray;
 	}
+
+	public int getNb() {
+		return nb;
+	}
+
+	public void setNb(int nb) {
+		this.nb = nb;
+	}
+
+	public double getTemps() {
+		return temps;
+	}
+
+	public void setTemps(double temps) {
+		this.temps = temps;
+	}
+	
 
 }
