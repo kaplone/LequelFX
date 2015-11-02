@@ -59,7 +59,11 @@ public class CellFields {
 				               j.get("nom").asText());
 		this.fieldDiskName.set(j.get("chemin").asText().split("/")[1]);
 		this.fieldSize.set(j.get("taille").asLong());
-		this.fieldExt.set(j.get("extension").asText());
+		
+		
+		//this.fieldExt.set(j.get("extension").asText());
+		
+		
 		this.fieldType.set(j.get("fichier").asBoolean() ? "Fichier" : "Dossier");
 		this.fieldDate.set(j.get("date").toString().split("\":\"")[1].split("T")[0] + " " +
 				           j.get("date").toString().split("\":\"")[1].split("T")[1].split("Z")[0]);

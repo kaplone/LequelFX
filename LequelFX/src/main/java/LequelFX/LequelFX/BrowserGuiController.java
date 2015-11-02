@@ -239,15 +239,11 @@ public class BrowserGuiController  implements Initializable {
 	
 	public void connecter(){
 
-		try {
 		mongoclient = new MongoClient( "192.168.0.201" , 27017 );
-		}
-		catch (UnknownHostException uhe) {
-		}
 		
 	
-		db = mongoclient.getDB( "Lequel" );
-		coll = db.getCollection("Lequel_V03");
+		db = mongoclient.getDB( "LequelFX" );
+		coll = db.getCollection("Lequel_V04");
 		
 
 		
@@ -434,10 +430,8 @@ public class BrowserGuiController  implements Initializable {
 	@FXML
 	protected void onTableClicked(){
 		currentCellFiefd = table.getSelectionModel().getSelectedItem();
-		System.out.println(currentCellFiefd.getFieldNameFull());
+		System.out.println("__" + currentCellFiefd.getFieldNameFull());
 		populatePathChild(currentCellFiefd);
-		
-		
 	}
 	
 	@FXML

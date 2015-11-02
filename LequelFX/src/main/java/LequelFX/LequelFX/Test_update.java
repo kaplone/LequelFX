@@ -49,11 +49,7 @@ public class Test_update {
 
 	public static void connecter(){
 
-		try {
 		mongoclient = new MongoClient( "192.168.0.201" , 27017 );
-		}
-		catch (UnknownHostException uhe) {
-		}
 		
 	
 		db = mongoclient.getDB( "Lequel" );

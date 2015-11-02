@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
-import org.bson.NewBSONDecoder;
+//import org.bson.NewBSONDecoder;
 
 import utils.CellFields;
 import utils.JsonUtils;
@@ -189,8 +189,10 @@ import javafx.scene.layout.BorderPane;
 			DBCursor res1 = res.sort(new BasicDBObject("chemin", 1));
 			
 			System.out.println(res1.explain());
+			System.out.println(res1.explain().get("executionStats"));
+			System.out.println(res1.explain().get("executionStats.executionTimeMillis"));
 			
-			tv.setTemps(Double.parseDouble(res.explain().get("millis").toString()) /1000);
+			//tv.setTemps(Double.parseDouble( res.explain().get("executionStats.executionTimeMillis") /1000);
 			
 			temps_res_label.setText("" + (tv.getTemps()) + " ");
 			
@@ -219,6 +221,10 @@ import javafx.scene.layout.BorderPane;
 	
 				if (! contenu.containsKey(cle)){
 					contenu.put(cle, (Date) n.get("scan"));
+					
+//					System.out.println("n : " + n);
+//					System.out.println("tv : " + tv);
+//					System.out.println("tv.getResArray() : " + tv.getResArray());
 					JsonUtils.loadList(n.toString(), tv.getResArray());
 					tv.setNb(tv.getNb() + 1);
 					if (tv.getNb() > 499){
@@ -295,15 +301,12 @@ import javafx.scene.layout.BorderPane;
 		
 		public void connecter(){
 	
-			try {
 			mongoclient = new MongoClient( "192.168.0.201" , 27017 );
-			}
-			catch (UnknownHostException uhe) {
-			}
 			
 		
-			db = mongoclient.getDB( "Lequel" );
-			coll = db.getCollection("Lequel_V03");
+			db = mongoclient.getDB( "LequelFX" );
+			coll = db.getCollection("Lequel_V04");
+			//coll = db.getCollection("Lequel_new_test");
 			
 	
 			
