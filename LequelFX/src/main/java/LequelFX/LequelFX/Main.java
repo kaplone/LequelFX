@@ -27,21 +27,21 @@ public class Main extends Application implements javafx.fxml.Initializable {
 			
 			stage_tableau = new Stage();
 			loader_tableau = new FXMLLoader();
-			URL location_t = getClass().getResource("/fxml/Gui.fxml");
+			URL location_t = getClass().getResource("Gui.fxml");
 			loader_tableau.setLocation(location_t);
 			loader_tableau.setBuilderFactory(new JavaFXBuilderFactory());
 
 			tableau =  loader_tableau.load(location_t.openStream());
 			//tableau = FXMLLoader.load(getClass().getResource("/fxml/Gui.fxml"));
 			scene_tableau = new Scene(tableau);
-			scene_tableau.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
+			scene_tableau.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			stage_tableau.setScene(scene_tableau);
 			stage_tableau.initModality(Modality.APPLICATION_MODAL);
 			stage_tableau.show();
 			
 			stage_browser = new Stage();
 			loader_browser = new FXMLLoader();
-			URL location_b = getClass().getResource("/fxml/BrowserGui.fxml");
+			URL location_b = getClass().getResource("BrowserGui.fxml");
 			loader_browser.setLocation(location_b);
 			loader_browser.setBuilderFactory(new JavaFXBuilderFactory());
 

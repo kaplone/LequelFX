@@ -31,8 +31,8 @@ public class CellFields {
 	ObjectProperty<JsonNode> fieldNode = new SimpleObjectProperty<JsonNode>();
 	
 	
-	Image file = new Image("/images/blank-document_256.jpg");
-	Image folder = new Image("/images/file-folder-icon_256.jpg");
+	Image file = new Image("utils/blank-document_256.jpg");
+	Image folder = new Image("utils/file-folder-icon_256.jpg");
 	
 	public CellFields(){
 	}
@@ -60,6 +60,7 @@ public class CellFields {
 		this.fieldDiskName.set(j.get("chemin").asText().split("/")[1]);
 		this.fieldSize.set(j.get("taille").asLong());
 		
+		this.id.set(j.get("_id").get("$oid").asText());
 		
 		//this.fieldExt.set(j.get("extension").asText());
 		

@@ -264,9 +264,18 @@ import javafx.scene.layout.BorderPane;
 			currentCellFiefd = table.getSelectionModel().getSelectedItem();
 			
 			if(currentCellFiefd != null && currentCellFiefd.getFieldName().length() != 0){
+				
 				BrowserGuiController bc = Main.getLoader_browser().getController();
-				bc.populatePath(currentCellFiefd);
+				
+				if (currentCellFiefd.getFieldType().equals("Fichier")){
+					bc.populatePath(currentCellFiefd);
+				}
+				else if (currentCellFiefd.getFieldType().equals("Dossier")){					
+					bc.populatePathChild(currentCellFiefd);	
+				}
+				
 				Main.getStageBrowser().show();
+				
 			}
 		}
 			

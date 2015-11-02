@@ -113,8 +113,6 @@ public class BrowserGuiController  implements Initializable {
 			pathBox.getChildren().clear();
 			currentCellFiefd = currCellFiefd;
 			boutons.clear();
-	        
-			System.out.println(currentCellFiefd.getFieldPathName());
 			
 			String [] fpn = currentCellFiefd.getFieldPathName().split("  ");
 			
