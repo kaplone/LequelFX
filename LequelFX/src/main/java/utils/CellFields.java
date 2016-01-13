@@ -49,26 +49,31 @@ public class CellFields {
 			}
 		}
 		
-		this.fieldPathName.set(p);	
-		
-		//this.id.set(j.get("id").asText());
-		this.json.set(j.asText());
-		this.fieldName.set(j.get("nom").asText());
-		this.fieldNameFull.set(j.get("fichier").asBoolean() ? 
-				               j.get("nom").asText() + "." + j.get("extension").asText() :
-				               j.get("nom").asText());
-		this.fieldDiskName.set(j.get("chemin").asText().split("/")[1]);
-		this.fieldSize.set(j.get("taille").asLong());
-		
-		this.id.set(j.get("_id").get("$oid").asText());
-		
-		//this.fieldExt.set(j.get("extension").asText());
-		
-		
-		this.fieldType.set(j.get("fichier").asBoolean() ? "Fichier" : "Dossier");
-		this.fieldDate.set(j.get("date").toString().split("\":\"")[1].split("T")[0] + " " +
-				           j.get("date").toString().split("\":\"")[1].split("T")[1].split("Z")[0]);
-		this.fieldImage.set(j.get("fichier").asBoolean() ? file : folder);
+		try {
+			
+			this.fieldPathName.set(p);	
+	
+			this.json.set(j.asText());
+			this.fieldName.set(j.get("nom").asText());
+			this.fieldNameFull.set(j.get("fichier").asBoolean() ? 
+					               j.get("nom").asText() + "." + j.get("extension").asText() :
+					               j.get("nom").asText());
+			this.fieldDiskName.set(j.get("chemin").asText().split("/")[1]);
+			this.fieldSize.set(j.get("taille").asLong());
+			
+			this.id.set(j.get("_id").get("$oid").asText());
+			
+			this.fieldExt.set(j.get("fichier").asBoolean() ? j.get("extension").asText() : "");
+			
+			
+			this.fieldType.set(j.get("fichier").asBoolean() ? "Fichier" : "Dossier");
+			this.fieldDate.set(j.get("date").toString().split("\":\"")[1].split("T")[0] + " " +
+					           j.get("date").toString().split("\":\"")[1].split("T")[1].split("Z")[0]);
+			this.fieldImage.set(j.get("fichier").asBoolean() ? file : folder);
+		}
+		catch (NullPointerException npe){
+			System.out.println(j);
+		}
 
 	}
 

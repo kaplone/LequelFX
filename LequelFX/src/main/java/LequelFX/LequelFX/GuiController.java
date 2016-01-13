@@ -4,6 +4,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 //import org.bson.NewBSONDecoder;
@@ -13,6 +14,7 @@ import utils.JsonUtils;
 import utils.TableViewGenerator;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -21,11 +23,14 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableArray;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
@@ -63,6 +68,9 @@ import javafx.scene.layout.BorderPane;
 		private TextField regex;
 		@FXML
 		private Button recherche_regex;
+		
+		@FXML
+		private ChoiceBox tags_choiceBox;
 	
 		private TableView<CellFields> table;
 		
@@ -107,6 +115,7 @@ import javafx.scene.layout.BorderPane;
 		
 		DB db;
 		DBCollection coll;
+		DBCollection boxes;
 		
 		@FXML
 		protected void onButtonRegexChercher(){
@@ -315,7 +324,7 @@ import javafx.scene.layout.BorderPane;
 		
 			db = mongoclient.getDB( "LequelFX" );
 			coll = db.getCollection("Lequel_V04");
-			//coll = db.getCollection("Lequel_new_test");
+			boxes = db.getCollection("boxes_V04");
 			
 	
 			
@@ -325,9 +334,23 @@ import javafx.scene.layout.BorderPane;
 			// TODO Stub de la méthode généré automatiquement
 			
 			racine.setCenter(onglets);
+			ObservableList<String> tags_list = FXCollections.observableArrayList();
 			
 			connecter();
+			
+			DBObject box = boxes.findOne();
+			
+			tags_list.add("Aucun tag");
+
+			for (Object s : (BasicDBList) box.get("tags")){
+				if (s != null){
+					tags_list.add((String) s);
+				}
+			}
+
+			tags_choiceBox.setItems(tags_list);
+			tags_choiceBox.getSelectionModel().select(0);
+	
 		}
-	
-	
+
 	}
