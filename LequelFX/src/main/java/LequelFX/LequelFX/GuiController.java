@@ -2,7 +2,9 @@ package LequelFX.LequelFX;
 	
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -32,6 +34,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -71,10 +74,14 @@ import javafx.scene.layout.BorderPane;
 		
 		@FXML
 		private ChoiceBox tags_choiceBox;
+		@FXML
+		private RadioButton inclureTag_radio;
 	
 		private TableView<CellFields> table;
 		
 		private DBCursor res;
+		
+		private String tag;
 		
 		private static CellFields currentCellFiefd;
 		
@@ -128,8 +135,33 @@ import javafx.scene.layout.BorderPane;
 			
 			tv = new TableViewGenerator(table);
 			
+            List<BasicDBObject> criteria = new ArrayList<BasicDBObject>();
+			
+			BasicDBObject rangSearch = new BasicDBObject("scanned.rang", 0);
+			criteria.add(rangSearch);
+			
+			tag = tags_choiceBox.getSelectionModel().getSelectedItem().toString();
+			if (! tag.equals("Aucun tag")){
+				
+				BasicDBObject tagSearch;
+				
+				if(inclureTag_radio.isSelected()){
+					tagSearch = new BasicDBObject("scanned.tag", tag);
+				}
+				else {
+					tagSearch = new BasicDBObject("scanned.tag", new BasicDBObject("$ne", tag));
+					
+				}
+				
+				criteria.add(tagSearch);
+			}
+			
 			BasicDBObject search = new BasicDBObject("nom", Pattern.compile(reg, Pattern.CASE_INSENSITIVE));
-			res = coll.find(search);
+			
+			criteria.add(search);
+			
+			BasicDBObject taggedTextSearch = new BasicDBObject("$and", criteria);
+			res = coll.find(taggedTextSearch);
 			
 			affichage();
 			
@@ -152,40 +184,63 @@ import javafx.scene.layout.BorderPane;
 			
 			tv = new TableViewGenerator(table);
 			
+			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>();
+			
+			BasicDBObject rangSearch = new BasicDBObject("scanned.rang", 0);
+			criteria.add(rangSearch);
+			
+			
+			tag = tags_choiceBox.getSelectionModel().getSelectedItem().toString();
+			if (! tag.equals("Aucun tag")){
+				
+				BasicDBObject tagSearch;
+				
+				if(inclureTag_radio.isSelected()){
+					tagSearch = new BasicDBObject("scanned.tag", tag);
+				}
+				else {
+					tagSearch = new BasicDBObject("scanned.tag", new BasicDBObject("$ne", tag));
+					
+				}
+				
+				criteria.add(tagSearch);
+			}
+			
+			BasicDBObject textSearch = null;
+							
 			if (motif.length() != 0 && et.length() == 0 && sauf.length() == 0){
-				
-				System.out.println("\n" + motif);
-				
-				currentTab = new Tab("[strict] " + motif);
-				
-				BasicDBObject search = new BasicDBObject("$search", String.format("\"%s\"", motif));
-				BasicDBObject textSearch = new BasicDBObject("$text", search);
-				res = coll.find(textSearch);
-				System.out.println(res.count());
 
+				currentTab = new Tab("[strict] " + motif + " (tag = " + tag + ")");
+
+				BasicDBObject search = new BasicDBObject("$search", String.format("\"%s\"", motif));
+				textSearch = new BasicDBObject("$text", search);
+				
 			}
 			else if (motif.length() != 0 && et.length() != 0){
 				
 				System.out.println("\n" + motif + " " + et);
 				
-				currentTab = new Tab("[strict] " + motif + "+" +  et);
+				currentTab = new Tab("[strict] " + motif + "+" +  et + " (tag = " + tag + ")");
 				
 				BasicDBObject et_search = new BasicDBObject("$search", String.format("\"%s\" \"%s\"", motif, et));
-				BasicDBObject textSearch_final_et = new BasicDBObject("$text", et_search);
-				res = coll.find(textSearch_final_et);
+				textSearch = new BasicDBObject("$text", et_search);
 			}
 			
             else if (motif.length() != 0 && sauf.length() != 0){
 				
 				System.out.println("\n" + motif + " " + sauf);
 				
-				currentTab = new Tab("[strict] " + motif + "-" +  sauf);
+				currentTab = new Tab("[strict] " + motif + "-" +  sauf + " (tag = " + tag + ")");
 				
 				BasicDBObject sauf_search = new BasicDBObject("$search", String.format("\"%s\" -\"%s\"", motif, sauf));
-				BasicDBObject textSearch_final_sauf = new BasicDBObject("$text", sauf_search);
-				res = coll.find(textSearch_final_sauf);
+				textSearch = new BasicDBObject("$text", sauf_search);
 			}
-
+			
+			criteria.add(textSearch);
+			
+			BasicDBObject taggedTextSearch = new BasicDBObject("$and", criteria);
+			res = coll.find(taggedTextSearch);
+			System.out.println(res.count());
 			affichage();
 		}
 		

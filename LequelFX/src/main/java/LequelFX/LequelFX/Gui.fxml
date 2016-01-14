@@ -29,10 +29,10 @@
 </HBox.margin></Button>
 <VBox alignment="CENTER" spacing="10.0">
 <children><HBox alignment="CENTER_LEFT" prefHeight="18.0" prefWidth="607.0">
-<children><RadioButton mnemonicParsing="false" selected="true" text="Inclure le tag">
+<children><RadioButton fx:id="inclureTag_radio" mnemonicParsing="false" selected="true" text="Inclure le tag">
 <toggleGroup>
 <ToggleGroup fx:id="tags" />
-</toggleGroup></RadioButton><RadioButton mnemonicParsing="false" text="Exclure le tag" toggleGroup="$tags">
+</toggleGroup></RadioButton><RadioButton fx:id="exlureTag_radio" mnemonicParsing="false" text="Exclure le tag" toggleGroup="$tags">
 <HBox.margin>
 <Insets left="10.0" />
 </HBox.margin></RadioButton><ChoiceBox fx:id="tags_choiceBox" prefHeight="25.0" prefWidth="258.0">
