@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
@@ -26,6 +27,10 @@ public class Main extends Application implements javafx.fxml.Initializable {
 		try {
 			
 			stage_tableau = new Stage();
+			
+			stage_tableau.getIcons().add(new Image(getClass().getResource("LequelFX_find_01.png").toExternalForm()));
+			stage_tableau.setTitle("LequelFX_find");
+			
 			loader_tableau = new FXMLLoader();
 			URL location_t = getClass().getResource("Gui.fxml");
 			loader_tableau.setLocation(location_t);
